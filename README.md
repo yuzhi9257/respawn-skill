@@ -1,38 +1,36 @@
-# zcode-skills（自研 ZCode 技能集）
+# agent-skills
 
-Custom skills for [ZCode](https://github.com/zhipuai/zcode) CLI — 收集自研的 ZCode 技能，复制或软链即用。
+Reusable skills for AI coding agents — 可复用的 AI 编码代理技能集。遵循开放的 [Agent Skills](https://agentskills.io) 规范，Claude Code / Codex / Cursor / ZCode 等 20+ 客户端通用，复制或软链即用。
 
-## 技能清单 / Skills
+## Skills
 
-| 技能 | 说明 |
-|---|---|
-| [respawn](respawn/SKILL.md) | 🎮 复活点：旧会话 token 耗尽/中断后，在新窗口断点续作任务，最小 token 消耗。说一句"继续 sess_xxx"即可从存档点复活。 |
+### [respawn](respawn/SKILL.md) 🎮
 
-## 安装 / Install
+断点续作：旧会话因 token 耗尽或中断"阵亡"后，在新窗口从存档点复活任务，最小 token 消耗。
 
-ZCode 按以下优先级发现技能（高 → 低）：
+**Use when:**
+- "继续 sess_xxx"
+- "上个窗口的任务没做完"
+- "token 用完了帮我接着做"
 
-1. `<项目>/.zcode/skills/`
-2. `<项目>/.agents/skills/`
-3. `~/.zcode/skills/`
-4. `~/.agents/skills/`
+## Install
 
-**全局使用**（推荐，所有项目生效）：
+一条命令安装（[skills CLI](https://skills.sh/)）：
+
+```bash
+npx skills add yuzhi9257/zcode-skills@respawn
+```
+
+或手动软链到任意客户端的技能目录：
 
 ```bash
 git clone https://github.com/yuzhi9257/zcode-skills.git
 ln -s "$(pwd)/zcode-skills/respawn" ~/.agents/skills/respawn
 ```
 
-**单项目使用**：
+## Structure
 
-```bash
-ln -s /path/to/zcode-skills/respawn /path/to/project/.agents/skills/respawn
-```
-
-## 技能结构
-
-每个技能一个目录，包含 `SKILL.md`（YAML frontmatter 声明 `name`/`description` + Markdown 正文）：
+每个技能一个目录：`SKILL.md`（YAML frontmatter 声明 `name`/`description` + Markdown 正文）。
 
 ```
 respawn/
