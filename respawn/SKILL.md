@@ -1,6 +1,6 @@
 ---
 name: respawn
-description: 从 token 耗尽或中断的旧 ZCode 会话"复活"任务，断点续作且 token 消耗最小。当用户说"继续 sess_xxx"、"上个窗口的任务没做完"、"token 用完了帮我接着做"、"从上个会话继续"、粘贴 sess_ 开头的会话 ID、或提到 respawn/复活点续作时使用。用 ReadSessionContext 一次性取回断点上下文，核对磁盘真实代码状态后接着执行，绝不重读旧会话全文。
+description: 断点续作：从 token 耗尽或中断的旧会话"复活"任务，最小 token 消耗。当用户说"继续 sess_xxx"、"上个窗口的任务没做完"、粘贴 sess_ 开头的会话 ID、或提到 respawn/复活点时使用。调用会话上下文检索工具一次性取回断点摘要，以磁盘真实代码为准核对后续作。
 ---
 
 # respawn（复活点）：断点续作
@@ -19,9 +19,9 @@ description: 从 token 耗尽或中断的旧 ZCode 会话"复活"任务，断点
 
 ### 2. 一次性取回断点上下文
 
-调一次 ReadSessionContext（全任务只调这一次，不要 relevant 和 handoff 各试一遍）：
+调用宿主环境的会话上下文检索工具一次（ZCode 中为 `ReadSessionContext`，其他客户端用其等价工具；全任务只调这一次）：
 
-- `strategy=relevant`，`maxTokens=4000`
+- 取回策略选聚焦检索（`strategy=relevant`），摘要上限约 4000 token（`maxTokens=4000`）
 - query 用下面这个模板（可按任务改写措辞，但保留五个要点）：
 
 ```text
@@ -45,14 +45,14 @@ description: 从 token 耗尽或中断的旧 ZCode 会话"复活"任务，断点
 
 ### 4. 续作
 
-- 用 TodoWrite 把剩余待办建成清单，逐项执行
+- 把剩余待办建成任务清单（如 TodoWrite），逐项执行
 - 读文件只读目标行段（offset/limit），不整文件重读
 - 不重复已验证通过的步骤（如已跑通的耗时 E2E），除非相关代码又改了
 - 完成后汇报：从哪里接续的、本次新增改动、验证结果
 
 ## 省 token 红线
 
-- ReadSessionContext 全任务只调一次；取回的摘要不完整时，靠核对磁盘补齐，不要再次查询旧会话
+- 会话检索全任务只调一次；取回的摘要不完整时，靠核对磁盘补齐，不要再查旧会话
 - 不重读摘要里提到的所有文件全文，只读要改的行段
 - 不重跑已验证通过的耗时测试
-- 委派 subagent 时只把结论传给它，禁止它去读旧会话全文
+- 委派 subagent 时只把结论传给它，旧会话全文由本流程一次性取回，subagent 不再访问
