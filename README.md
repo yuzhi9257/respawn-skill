@@ -18,14 +18,14 @@ Reusable skills for AI coding agents — 可复用的 AI 编码代理技能集�
 一条命令安装（[skills CLI](https://skills.sh/)）：
 
 ```bash
-npx skills add yuzhi9257/zcode-skills@respawn
+npx skills add yuzhi9257/agent-skills@respawn
 ```
 
 或手动软链到任意客户端的技能目录：
 
 ```bash
-git clone https://github.com/yuzhi9257/zcode-skills.git
-ln -s "$(pwd)/zcode-skills/respawn" ~/.agents/skills/respawn
+git clone https://github.com/yuzhi9257/agent-skills.git
+ln -s "$(pwd)/agent-skills/respawn" ~/.agents/skills/respawn
 ```
 
 ## Structure
